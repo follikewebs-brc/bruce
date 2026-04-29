@@ -17,8 +17,13 @@
 
 #include "sd_diskio2.h"
 #include "esp_system.h"
+
+// Check for periman support at compile time
 #if __has_include("esp32-hal-periman.h")
   #include "esp32-hal-periman.h"
+  #define HAS_PERIMAN_SUPPORT 1
+#else
+  #define HAS_PERIMAN_SUPPORT 0
 #endif
 
 extern "C" {
@@ -711,7 +716,9 @@ uint8_t sdcard_init(uint8_t cs, SPIClass *spi, int hz) {
 
   pinMode(card->ssPin, OUTPUT);
   digitalWrite(card->ssPin, HIGH);
-  #if __has_include("esp32-hal-periman.h")
+  
+  // Safely call periman function only if header is available
+  #if HAS_PERIMAN_SUPPORT
     perimanSetPinBusExtraType(card->ssPin, "SD_SS");
   #endif
 
