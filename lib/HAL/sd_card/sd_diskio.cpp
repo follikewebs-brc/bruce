@@ -17,7 +17,9 @@
 
 #include "sd_diskio2.h"
 #include "esp_system.h"
-#include "esp32-hal-periman.h"
+#if __has_include("esp32-hal-periman.h")
+  #include "esp32-hal-periman.h"
+#endif
 
 extern "C" {
 #include "ff.h"
@@ -709,7 +711,9 @@ uint8_t sdcard_init(uint8_t cs, SPIClass *spi, int hz) {
 
   pinMode(card->ssPin, OUTPUT);
   digitalWrite(card->ssPin, HIGH);
-  perimanSetPinBusExtraType(card->ssPin, "SD_SS");
+  #if __has_include("esp32-hal-periman.h")
+    perimanSetPinBusExtraType(card->ssPin, "SD_SS");
+  #endif
 
   s_cards[pdrv] = card;
 
